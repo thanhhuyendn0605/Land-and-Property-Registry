@@ -1,0 +1,569 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Land & Property Registry</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+
+  <!-- Ethers.js v6: required by existing app.js -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"
+    defer>
+  </script>
+
+  <!-- Existing blockchain logic: unchanged -->
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">
+        <i data-lucide="landmark"></i>
+      </div>
+      <div>
+        <h2>Land Registry</h2>
+        <p>Management System</p>
+      </div>
+    </div>
+
+    <div class="sidebar-label">Navigation</div>
+
+    <nav class="sidebar-nav">
+      <button type="button" class="nav-link active" data-page="dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Dashboard</span>
+      </button>
+
+      <button type="button" class="nav-link" data-page="register">
+        <i data-lucide="file-plus-2"></i>
+        <span>Land Registration</span>
+      </button>
+
+      <button type="button" class="nav-link" data-page="search">
+        <i data-lucide="search"></i>
+        <span>Land Search</span>
+      </button>
+
+      <button type="button" class="nav-link" data-page="transfer">
+        <i data-lucide="arrow-left-right"></i>
+        <span>Ownership Transfer</span>
+      </button>
+
+      <button type="button" class="nav-link" data-page="approval">
+        <i data-lucide="clipboard-check"></i>
+        <span>Transfer Approval</span>
+      </button>
+
+      <button type="button" class="nav-link" data-page="history">
+        <i data-lucide="history"></i>
+        <span>Transaction History</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="network-summary">
+        <span class="network-dot"></span>
+        <div>
+          <strong>Ganache Local</strong>
+          <small>Local development network · Chain 1337</small>
+        </div>
+      </div>
+      <p class="sidebar-note">Land & Property Registry</p>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-layout">
+
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Land & Property Registry</h1>
+        <p>Land administration and ownership management</p>
+      </div>
+
+      <div class="wallet-panel">
+        <div class="wallet-details">
+          <span class="wallet-label">Wallet</span>
+          <strong id="walletAddress">Wallet not connected</strong>
+        </div>
+
+        <button id="connectWallet" type="button" class="primary-btn">
+          <i data-lucide="wallet"></i>
+          Connect MetaMask
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- GLOBAL STATUS -->
+      <p id="status" role="status" aria-live="polite"></p>
+
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="page active">
+
+        <div class="page-heading dashboard-heading">
+          <div>
+            <h2>Dashboard</h2>
+            <p>Overview of land records and blockchain activity</p>
+          </div>
+        </div>
+
+        <!-- STATISTICS -->
+        <div class="stats-grid">
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span>Registered Lands</span>
+              <i data-lucide="map"></i>
+            </div>
+            <strong id="totalLands">—</strong>
+            <small>Total registered land parcels</small>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span>Approved Transfers</span>
+              <i data-lucide="check-circle-2"></i>
+            </div>
+            <strong id="totalApproved">—</strong>
+            <small>Completed ownership transfers</small>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span>Pending Requests</span>
+              <i data-lucide="clock-3"></i>
+            </div>
+            <strong id="totalPending">—</strong>
+            <small>Awaiting officer approval</small>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span>Current Block</span>
+              <i data-lucide="boxes"></i>
+            </div>
+            <strong id="currentBlock">—</strong>
+            <small>Ganache blockchain height</small>
+          </article>
+
+        </div>
+
+        <!-- DASHBOARD DETAILS -->
+        <div class="dashboard-grid">
+
+          <!-- BLOCKCHAIN CONNECTION -->
+          <div class="panel">
+            <div class="panel-heading">
+              <h3>Blockchain Connection</h3>
+              <span class="panel-description">System information</span>
+            </div>
+
+            <div class="system-table">
+
+              <div class="system-row">
+                <span>Network</span>
+                <strong>Ganache Local</strong>
+              </div>
+
+              <div class="system-row">
+                <span>Chain ID</span>
+                <strong>1337</strong>
+              </div>
+
+              <div class="system-row">
+                <span>Backend</span>
+                <strong>Flask API / Web3.py</strong>
+              </div>
+
+              <div class="system-row">
+                <span>Connection Status</span>
+                <strong id="connectionStatus">Not connected</strong>
+              </div>
+
+              <div class="system-row address-row">
+                <span>Smart Contract Address</span>
+
+                <div class="contract-address">
+                  <code id="displayContractAddress">
+                    Loading...
+                  </code>
+
+                  <button
+                    id="copyContractBtn"
+                    type="button"
+                    class="copy-btn"
+                    title="Copy contract address"
+                    disabled>
+                    <i data-lucide="copy"></i>
+                    Copy
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- QUICK ACTIONS -->
+          <div class="panel">
+            <div class="panel-heading">
+              <h3>Quick Actions</h3>
+              <span class="panel-description">Common tasks</span>
+            </div>
+
+            <div class="quick-actions">
+
+              <button type="button" data-go="register">
+                <i data-lucide="file-plus-2"></i>
+                <span>Register New Land</span>
+                <i data-lucide="chevron-right" class="action-right"></i>
+              </button>
+
+              <button type="button" data-go="search">
+                <i data-lucide="search"></i>
+                <span>Search Land Records</span>
+                <i data-lucide="chevron-right" class="action-right"></i>
+              </button>
+
+              <button type="button" data-go="transfer">
+                <i data-lucide="arrow-left-right"></i>
+                <span>Request Ownership Transfer</span>
+                <i data-lucide="chevron-right" class="action-right"></i>
+              </button>
+
+              <button type="button" data-go="approval">
+                <i data-lucide="clipboard-check"></i>
+                <span>Review Transfer Request</span>
+                <i data-lucide="chevron-right" class="action-right"></i>
+              </button>
+
+              <button type="button" data-go="history">
+                <i data-lucide="history"></i>
+                <span>View Ownership History</span>
+                <i data-lucide="chevron-right" class="action-right"></i>
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- LAND REGISTRATION -->
+      <section id="register" class="page">
+
+        <div class="page-heading">
+          <h2>Land Registration</h2>
+          <p>Register a new land parcel on the blockchain</p>
+        </div>
+
+        <div class="panel form-panel">
+
+          <div class="panel-heading">
+            <h3>New Land Record</h3>
+            <span class="panel-description">Required information</span>
+          </div>
+
+          <div class="form-grid">
+
+            <div class="form-field">
+              <label for="landId">Land ID</label>
+              <input
+                id="landId"
+                type="text"
+                placeholder="e.g. LAND003">
+            </div>
+
+            <div class="form-field">
+              <label for="location">Location</label>
+              <input
+                id="location"
+                type="text"
+                placeholder="e.g. Da Nang">
+            </div>
+
+            <div class="form-field">
+              <label for="area">Land Area (m²)</label>
+              <input
+                id="area"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="Enter land area">
+            </div>
+
+            <div class="form-field">
+              <label for="owner">Owner Wallet Address</label>
+              <input
+                id="owner"
+                type="text"
+                placeholder="0x...">
+            </div>
+
+          </div>
+
+          <div class="form-footer">
+            <p>
+              Only the authorized officer can register new land parcels.
+            </p>
+
+            <button id="registerBtn" type="button" class="primary-btn">
+              <i data-lucide="save"></i>
+              Register Land
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- LAND SEARCH -->
+      <section id="search" class="page">
+
+        <div class="page-heading">
+          <h2>Land Search</h2>
+          <p>Find registered land information</p>
+        </div>
+
+        <div class="panel form-panel">
+
+          <div class="panel-heading">
+            <h3>Search Land Records</h3>
+            <span class="panel-description">Land ID lookup</span>
+          </div>
+
+          <div class="search-form">
+            <div class="form-field">
+              <label for="searchId">Land ID</label>
+              <input
+                id="searchId"
+                type="text"
+                placeholder="e.g. LAND002">
+            </div>
+
+            <button id="searchBtn" type="button" class="primary-btn">
+              <i data-lucide="search"></i>
+              Search Land
+            </button>
+          </div>
+
+          <div class="result-section">
+            <h3>Land Information</h3>
+            <pre id="landResult">No land selected.</pre>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- OWNERSHIP TRANSFER -->
+      <section id="transfer" class="page">
+
+        <div class="page-heading">
+          <h2>Ownership Transfer</h2>
+          <p>Submit a request to transfer land ownership</p>
+        </div>
+
+        <div class="panel form-panel">
+
+          <div class="panel-heading">
+            <h3>New Transfer Request</h3>
+            <span class="panel-description">Current owner authorization</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="transferId">Land ID</label>
+              <input
+                id="transferId"
+                type="text"
+                placeholder="e.g. LAND002">
+            </div>
+
+            <div class="form-field">
+              <label for="newOwner">New Owner Wallet Address</label>
+              <input
+                id="newOwner"
+                type="text"
+                placeholder="0x...">
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <p>
+              Only the current owner can submit a transfer request.
+            </p>
+
+            <button id="requestBtn" type="button" class="primary-btn">
+              <i data-lucide="send"></i>
+              Submit Transfer Request
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TRANSFER APPROVAL -->
+      <section id="approval" class="page">
+
+        <div class="page-heading">
+          <h2>Transfer Approval</h2>
+          <p>Review and process pending ownership transfers</p>
+        </div>
+
+        <div class="panel form-panel">
+
+          <div class="panel-heading">
+            <h3>Officer Review</h3>
+            <span class="panel-description">Authorized access only</span>
+          </div>
+
+          <div class="form-field">
+            <label for="approveId">Land ID</label>
+            <input
+              id="approveId"
+              type="text"
+              placeholder="e.g. LAND002">
+          </div>
+
+          <div class="button-group">
+            <button id="approveBtn" type="button" class="primary-btn">
+              <i data-lucide="check"></i>
+              Approve Transfer
+            </button>
+
+            <button id="rejectBtn" type="button" class="danger-btn">
+              <i data-lucide="x"></i>
+              Reject Transfer
+            </button>
+          </div>
+
+          <p class="helper-text">
+            Only the authorized officer can approve or reject requests.
+          </p>
+
+        </div>
+      </section>
+
+      <!-- TRANSACTION HISTORY -->
+      <section id="history" class="page">
+
+        <div class="page-heading">
+          <h2>Transaction History</h2>
+          <p>Review ownership records stored on the blockchain</p>
+        </div>
+
+        <div class="panel form-panel">
+
+          <div class="panel-heading">
+            <h3>Ownership History</h3>
+            <span class="panel-description">Blockchain records</span>
+          </div>
+
+          <div class="search-form">
+            <div class="form-field">
+              <label for="historyId">Land ID</label>
+              <input
+                id="historyId"
+                type="text"
+                placeholder="e.g. LAND002">
+            </div>
+
+            <button id="historyBtn" type="button" class="primary-btn">
+              <i data-lucide="history"></i>
+              View Ownership History
+            </button>
+          </div>
+
+          <div class="result-section">
+            <h3>Ownership Records</h3>
+            <pre id="historyResult">No history loaded.</pre>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- Interface-only helpers; existing app.js remains unchanged -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+    // Render consistent SVG icons
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+
+    const addressElement =
+      document.getElementById("displayContractAddress");
+
+    const copyButton =
+      document.getElementById("copyContractBtn");
+
+    let contractAddress = "";
+
+    // Read address from existing Flask API
+    async function displayContractConfig() {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:5000/api/config"
+        );
+
+        if (!response.ok) {
+          throw new Error("Configuration unavailable");
+        }
+
+        const config = await response.json();
+
+        if (
+          typeof config.contractAddress !== "string" ||
+          !/^0x[a-fA-F0-9]{40}$/.test(config.contractAddress)
+        ) {
+          throw new Error("Invalid contract address");
+        }
+
+        contractAddress = config.contractAddress;
+        addressElement.textContent = contractAddress;
+        copyButton.disabled = false;
+
+      } catch (error) {
+        addressElement.textContent = "Address unavailable";
+        copyButton.disabled = true;
+        console.warn("Contract display:", error.message);
+      }
+    }
+
+    copyButton.addEventListener("click", async () => {
+      if (!contractAddress) return;
+
+      try {
+        await navigator.clipboard.writeText(contractAddress);
+        copyButton.textContent = "Copied!";
+
+        setTimeout(() => {
+          copyButton.textContent = "Copy";
+          if (window.lucide) lucide.createIcons();
+        }, 1500);
+
+      } catch (error) {
+        copyButton.textContent = "Copy failed";
+      }
+    });
+
+    displayContractConfig();
+  });
+</script>
+
+</body>
+</html>

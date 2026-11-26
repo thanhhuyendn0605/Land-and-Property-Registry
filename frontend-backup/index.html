@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Land & Property Registry</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Land & Property Registry</h1>
+    <p>Blockchain-based Land Management System</p>
+    <button id="connectWallet">Connect MetaMask</button>
+    <p id="walletAddress">Wallet not connected</p>
+    <p id="status" role="status"></p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Register Land</h2>
+      <input id="landId" placeholder="Land ID (LAND002)">
+      <input id="location" placeholder="Location">
+      <input id="area" type="number" min="1" placeholder="Area (m²)">
+      <input id="owner" placeholder="Owner wallet address">
+      <button id="registerBtn">Register Land</button>
+    </section>
+
+    <section>
+      <h2>Search Land</h2>
+      <input id="searchId" placeholder="Land ID (LAND001)">
+      <button id="searchBtn">Search</button>
+      <pre id="landResult"></pre>
+    </section>
+
+    <section>
+      <h2>Request Transfer</h2>
+      <input id="transferId" placeholder="Land ID">
+      <input id="newOwner" placeholder="New owner address">
+      <button id="requestBtn">Request Transfer</button>
+    </section>
+
+    <section>
+      <h2>Officer Approval</h2>
+      <input id="approveId" placeholder="Land ID">
+      <button id="approveBtn">Approve Transfer</button>
+      <button id="rejectBtn">Reject Transfer</button>
+    </section>
+
+    <section>
+      <h2>Ownership History</h2>
+      <input id="historyId" placeholder="Land ID">
+      <button id="historyBtn">View History</button>
+      <pre id="historyResult"></pre>
+    </section>
+  </main>
+</body>
+</html>

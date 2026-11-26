@@ -1,0 +1,6 @@
+
+{
+  "rpcUrl": "http://127.0.0.1:7545",
+  "chainId": 1337,
+  "contractAddress": "0xc918a5AaD7Ee965dBcCca8f7961A7E8d7c208D25"
+}

@@ -1,0 +1,70 @@
+
+{
+  "project": "Land & Property Registry",
+  "course": "Blockchain: Theory & Practices",
+  "reportType": "Gas Cost Analysis",
+  "measurementTool": "Remix IDE",
+  "environment": {
+    "compiler": "Solidity 0.8.20",
+    "compilerEvmTarget": "Paris",
+    "optimizerEnabled": false,
+    "executionNetwork": "Remix VM",
+    "metric": "Transaction Cost",
+    "unit": "gas"
+  },
+  "contracts": {
+    "original": "LandRegistry.sol",
+    "optimized": "LandRegistryOptimized.sol"
+  },
+  "optimization": {
+    "technique": "Solidity Custom Errors",
+    "description": "Replace string-based revert messages with custom errors"
+  },
+  "testData": {
+    "landId": "GAS001",
+    "location": "Da Nang",
+    "area": 200,
+    "initialOwner": "Remix VM Account 1",
+    "newOwner": "Remix VM Account 2",
+    "officer": "Remix VM Account 1"
+  },
+  "measurements": {
+    "deployment": {
+      "originalGas": 1785200,
+      "optimizedGas": 1521525,
+      "gasSaved": 263675,
+      "reductionPercent": 14.77
+    },
+    "registerLand": {
+      "originalGas": 165041,
+      "optimizedGas": 165041,
+      "gasSaved": 0,
+      "reductionPercent": 0
+    },
+    "requestTransfer": {
+      "originalGas": 53076,
+      "optimizedGas": 53076,
+      "gasSaved": 0,
+      "reductionPercent": 0
+    },
+    "approveTransfer": {
+      "originalGas": 86642,
+      "optimizedGas": 86642,
+      "gasSaved": 0,
+      "reductionPercent": 0
+    }
+  },
+  "testing": {
+    "originalTestsPassed": 8,
+    "optimizedTestsPassed": 8,
+    "totalPassed": 16,
+    "totalFailed": 0
+  },
+  "notes": [
+    "The optimized contract reduced deployment gas by approximately 14.77%.",
+    "The three measured successful transactions had identical gas costs.",
+    "Reverted transaction paths were not benchmarked.",
+    "Measurements were performed separately from the website's Ganache deployment.",
+    "Retain compiler and Remix VM settings as supporting evidence."
+  ]
+}
